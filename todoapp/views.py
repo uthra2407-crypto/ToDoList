@@ -1,12 +1,15 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Task
 
 # Create your views here.
 def home(request):
     t=Task.objects.filter(is_completed=False)
+    c_t=Task.objects.filter(is_completed=True)
+    print(c_t)
     context ={
         't':t,
+        'c_t':c_t,
     }
     return render(request,'home.html',context)
 
@@ -15,3 +18,10 @@ def addTask(request):
     Task.objects.create(task=task)
     return redirect('/')
     # return HttpResponse("The task was updated......")
+
+def completed(request, pk):
+    t=get_object_or_404(Task,pk=pk)
+    t.is_completed=True
+    t.save()
+    return redirect('/')
+    # return HttpResponse(pk)
